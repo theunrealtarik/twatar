@@ -74,7 +74,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
           disabled={post.isLoading}
           onChange={(e) => setContent(() => e.target.value)}
           placeholder="wtf is going on ..."
-          className="min-h-[10px] flex-1 resize-y text-xl shadow-none outline-none dark:bg-black"
+          className="min-h-[10px] flex-1 resize-y rounded-lg text-xl shadow-none outline-none dark:bg-black"
         ></textarea>
       </div>
 
