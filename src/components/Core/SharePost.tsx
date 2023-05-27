@@ -45,7 +45,10 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
   const submitHandler: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (content.length === 0) return;
-    post.mutateAsync({ content, gifUrl }).finally(() => setContent(() => ""));
+    post.mutateAsync({ content, gifUrl }).finally(() => {
+      setContent(() => "");
+      setGifUrl(undefined);
+    });
   };
 
   const onOpen = useCallback(
