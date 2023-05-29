@@ -7,30 +7,30 @@ import Input from "../UI/Input";
 import IconButton from "../UI/IconButton";
 
 import Link from "next/link";
+import Image from "next/image";
 
 import { FiRepeat } from "react-icons/fi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { classNames, relativeFormatTime } from "@/common/lib/utils";
-import Image from "next/image";
 
-interface PostProps {
-  data: RouterOutputs["feed"]["posts"][number];
+interface TwatCardProps {
+  data: RouterOutputs["feed"]["twats"][number];
 }
 
-const Post: FC<PostProps> = ({ data }) => {
+const TwatCard: FC<TwatCardProps> = ({ data }) => {
   const [isVisible, setVisible] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
 
   const context = api.useContext();
   const onSuccess = async () => {
-    await updatePostCache(context, data.id);
+    await updateTwatCache(context, data.id);
   };
 
-  const repost = api.posts.repost.useMutation({ onSuccess });
-  const like = api.posts.like.useMutation({ onSuccess });
+  const retwat = api.twats.retwat.useMutation({ onSuccess });
+  const like = api.twats.like.useMutation({ onSuccess });
 
-  const repostHandler = useCallback(() => {
-    repost.mutate({ tid: data.id, content });
+  const retwatHandler = useCallback(() => {
+    retwat.mutate({ tid: data.id, content });
     setVisible(false);
   }, [isVisible, content]);
 
@@ -39,22 +39,22 @@ const Post: FC<PostProps> = ({ data }) => {
       <Header author={data.author} createdAt={data.createdAt} />
       <p className="text-md line-clamp-3 md:text-lg">{data.content}</p>
       <Attachment url={data.embeddedGif} />
-      {data.embeddedPost && (
+      {data.embeddedTwat && (
         <div className="rounded-xl border border-gray-300 p-4 dark:border-neutral-600">
           <Header
-            author={{ ...data.embeddedPost.author }}
-            createdAt={data.embeddedPost.createdAt}
+            author={{ ...data.embeddedTwat.author }}
+            createdAt={data.embeddedTwat.createdAt}
           />{" "}
           <Link
             href={{
               pathname: "",
               query: {
-                id: data.embeddedPost.id,
+                id: data.embeddedTwat.id,
               },
             }}
           >
-            <p>{data.embeddedPost.content}</p>
-            <Attachment url={data.embeddedPost.embeddedGif} />
+            <p>{data.embeddedTwat.content}</p>
+            <Attachment url={data.embeddedTwat.embeddedGif} />
           </Link>
         </div>
       )}
@@ -84,21 +84,21 @@ const Post: FC<PostProps> = ({ data }) => {
           <IconButton
             colorScheme="tree"
             onClick={() => setVisible(() => !isVisible)}
-            className={classNames(data.selfRepost ? "text-green-600" : "")}
+            className={classNames(data.selfRetwat ? "text-green-600" : "")}
           >
             <FiRepeat size={18} />
           </IconButton>
           <span
             className={classNames(
               "cursor-default font-medium",
-              data.selfRepost ? "text-green-600" : "text-gray-500"
+              data.selfRetwat ? "text-green-600" : "text-gray-500"
             )}
           >
-            {data._count.reposts}
+            {data._count.retwats}
           </span>
         </div>
       </div>
-      {isVisible && !data.selfRepost && (
+      {isVisible && !data.selfRetwat && (
         <div className="inline-flex w-full gap-x-4">
           <Input
             className="w-full rounded p-2 outline-none"
@@ -106,8 +106,8 @@ const Post: FC<PostProps> = ({ data }) => {
             onChange={(e) => setContent(() => e.target.value)}
           />
           <Button
-            disabled={repost.isLoading || content.length === 0}
-            onClick={repostHandler}
+            disabled={retwat.isLoading || content.length === 0}
+            onClick={retwatHandler}
           >
             Retwat
           </Button>
@@ -117,7 +117,7 @@ const Post: FC<PostProps> = ({ data }) => {
   );
 };
 
-interface PostHeaderProps {
+interface TwatHeaderProps {
   author: {
     id: string;
     name: string | null;
@@ -149,7 +149,7 @@ const Attachment: FC<{ url: string | null }> = ({ url }) => {
   );
 };
 
-const Header: FC<PostHeaderProps> = ({ author, createdAt }) => {
+const Header: FC<TwatHeaderProps> = ({ author, createdAt }) => {
   return (
     <div className="inline-flex w-full items-center justify-start gap-x-2">
       <UserAvatar size="sm" src={author.image} />
@@ -171,11 +171,11 @@ const Header: FC<PostHeaderProps> = ({ author, createdAt }) => {
   );
 };
 
-const updatePostCache = async (
+const updateTwatCache = async (
   apiContext: ReturnType<typeof api.useContext>,
   tid: string
 ) => {
-  const updatedPost = await apiContext.posts.get.fetch({ tid });
+  const updatedTwat = await apiContext.twats.get.fetch({ tid });
 
   apiContext.feed.setInfiniteData({}, (cache) => {
     if (!cache || cache.pages[0] == null) return;
@@ -184,17 +184,17 @@ const updatePostCache = async (
       pageParams: [],
       pages: cache.pages.map((page) => ({
         ...page,
-        posts: page.posts.map((cachedPost) => {
-          if (cachedPost.id === tid) {
-            console.log(updatedPost);
+        twats: page.twats.map((cachedTwat) => {
+          if (cachedTwat.id === tid) {
+            console.log(updatedTwat);
 
-            return updatedPost || cachedPost;
+            return updatedTwat || cachedTwat;
           }
-          return cachedPost;
+          return cachedTwat;
         }),
       })),
     };
   });
 };
 
-export default Post;
+export default TwatCard;

@@ -1,9 +1,10 @@
 import { type GetServerSidePropsContext } from "next";
 import { getServerSession, type NextAuthOptions } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/common/server/db";
+
+import DiscordProvider from "next-auth/providers/discord";
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
@@ -11,7 +12,6 @@ export const authOptions: NextAuthOptions = {
       ...session,
       user: {
         ...session.user,
-
         id: user.id,
       },
     }),

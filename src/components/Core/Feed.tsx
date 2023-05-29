@@ -3,7 +3,7 @@ import { useScroll } from "@/hooks";
 import { FC, useEffect } from "react";
 
 import Loading from "../Feedback/Loading";
-import Post from "./Post";
+import TwatCard from "./TwatCard";
 import Image from "next/image";
 
 interface FeedProps {
@@ -27,12 +27,12 @@ const Feed: FC<FeedProps> = ({ filters }) => {
     }
   }, [scrollPos]);
 
-  const posts = feed.data?.pages.flatMap((page) => page.posts) ?? [];
+  const twats = feed.data?.pages.flatMap((page) => page.twats) ?? [];
   const isAmerican =
     !feed.hasNextPage &&
     feed.data?.pages &&
     feed.data.pages.length > 2 &&
-    posts.length > 0;
+    twats.length > 0;
 
   if (feed.isLoading && !feed.data) {
     return (
@@ -44,8 +44,8 @@ const Feed: FC<FeedProps> = ({ filters }) => {
 
   return (
     <div className="divide-y-gray-300 space-y-2 divide-y p-4 dark:divide-neutral-600">
-      {posts.map((post) => (
-        <Post key={post.id} data={post} />
+      {twats.map((twat) => (
+        <TwatCard key={twat.id} data={twat} />
       ))}
       {isAmerican && (
         <div className="mx-auto w-full py-4">

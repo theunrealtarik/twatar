@@ -13,11 +13,11 @@ import { AiOutlineGif } from "react-icons/ai";
 import Image from "next/image";
 import { FiX } from "react-icons/fi";
 
-interface SharePostProps {
+interface CreateTwatProps {
   user: IUser | null;
 }
 
-const SharePost: FC<SharePostProps> = ({ user }) => {
+const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
   const [gifUrl, setGifUrl] = useState<string | undefined>(undefined);
@@ -25,7 +25,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
   const context = api.useContext();
   const modal = useRef<HTMLDialogElement>(null);
 
-  const post = api.posts.create.useMutation({
+  const twat = api.twats.create.useMutation({
     onSuccess: async (data) => {
       context.feed.setInfiniteData({}, (cache) => {
         if (!cache || cache.pages.at(0) == null) return;
@@ -34,7 +34,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
         return {
           pages: cache.pages.map((page) => ({
             ...page,
-            posts: [data, ...page.posts],
+            twats: [data, ...page.twats],
           })),
           pageParams: [],
         };
@@ -45,7 +45,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
   const submitHandler: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (content.length === 0) return;
-    post.mutateAsync({ content, gifUrl }).finally(() => {
+    twat.mutateAsync({ content, gifUrl }).finally(() => {
       setContent(() => "");
       setGifUrl(undefined);
     });
@@ -71,7 +71,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
         <UserAvatar size="sm" src={user?.image ?? null} />
         <textarea
           value={content}
-          disabled={post.isLoading}
+          disabled={twat.isLoading}
           onChange={(e) => setContent(() => e.target.value)}
           placeholder="wtf is going on ..."
           className="min-h-[10px] flex-1 resize-y rounded-lg text-xl shadow-none outline-none dark:bg-black"
@@ -98,7 +98,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
             </dialog>
           </div>
         </div>
-        <Button type="submit" disabled={post.isLoading || content.length === 0}>
+        <Button type="submit" disabled={twat.isLoading || content.length === 0}>
           Twat
         </Button>
       </div>
@@ -116,7 +116,7 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
             <Image
               fill
               src={gifUrl}
-              alt="Post Gif"
+              alt="Twat Gif"
               className="z-10 bg-gray-200 object-contain dark:bg-neutral-500"
               loading={"lazy"}
               quality={100}
@@ -129,4 +129,4 @@ const SharePost: FC<SharePostProps> = ({ user }) => {
   );
 };
 
-export default SharePost;
+export default CreateTwat;

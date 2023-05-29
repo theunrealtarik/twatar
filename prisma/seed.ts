@@ -11,7 +11,7 @@ for (let i = 0; i < 50; i++) {
         name: faker.internet.userName(),
         image: faker.image.avatar(),
         email: faker.internet.email(),
-        posts: {
+        twats: {
           create: {
             content: faker.lorem.paragraph(),
           },

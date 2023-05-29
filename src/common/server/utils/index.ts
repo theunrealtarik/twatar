@@ -1,12 +1,12 @@
-import type { Like, Post } from "@prisma/client";
+import type { Like, Twat } from "@prisma/client";
 
-export const POST_INCLUDES = {
-  embeddedPost: {
+export const TWAT_INCLUDES = {
+  embeddedTwat: {
     include: {
       author: true,
     },
   },
-  reposts: true,
+  retwats: true,
   author: {
     select: {
       id: true,
@@ -22,7 +22,7 @@ export const POST_INCLUDES = {
   _count: {
     select: {
       likes: true,
-      reposts: true,
+      retwats: true,
     },
   },
 };
@@ -31,16 +31,16 @@ export function selfInteractions(
   sessionUserId: string,
   {
     likes,
-    reposts,
+    retwats,
   }: {
     likes: Pick<Like, "userId">[];
-    reposts: Post[];
+    retwats: Twat[];
   }
 ) {
   const selfLike = !!likes.find((like) => like.userId === sessionUserId);
-  const selfRepost = !!reposts.find(
-    (repost) => repost.authorId === sessionUserId
+  const selfRetwat = !!retwats.find(
+    (retwat) => retwat.authorId === sessionUserId
   );
 
-  return { selfLike, selfRepost };
+  return { selfLike, selfRetwat };
 }

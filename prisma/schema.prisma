@@ -43,7 +43,7 @@ model User {
     bio           String?
     account       Account?
     sessions      Session[]
-    posts         Post[]
+    twats         Twat[]
     likes         Like[]
     followers     User[]    @relation(name: "Followers")
     following     User[]    @relation(name: "Followers")
@@ -58,24 +58,24 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model Post {
+model Twat {
     id           String   @id @unique @default(uuid())
     content      String
     createdAt    DateTime @default(now())
     author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId     String
     embeddedGif  String?
-    embeddedPost Post?    @relation(name: "repost", fields: [repostId], references: [id], onDelete: Cascade)
-    reposts      Post[]   @relation(name: "repost")
-    repostId     String?
+    embeddedTwat Twat?    @relation(name: "repost", fields: [retwatId], references: [id], onDelete: Cascade)
+    retwats      Twat[]   @relation(name: "repost")
+    retwatId     String?
     likes        Like[]
 }
 
 model Like {
     userId String
-    postId String
+    twatId String
     user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-    post   Post?  @relation(fields: [postId], references: [id], onDelete: Cascade)
+    twat   Twat?  @relation(fields: [twatId], references: [id], onDelete: Cascade)
 
-    @@id([userId, postId])
+    @@id([userId, twatId])
 }

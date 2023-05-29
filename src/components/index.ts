@@ -9,8 +9,8 @@ export { default as Error } from "./Feedback/Error";
 export { default as ErrorBoundary } from "./Feedback/ErrorBoundary";
 export { default as Loading } from "./Feedback/Loading";
 
-export { default as Post } from "./Core/Post";
-export { default as SharePost } from "./Core/SharePost";
+export { default as TwatCard } from "./Core/TwatCard";
+export { default as TwatCreate } from "./Core/TwatCreate";
 export { default as Feed } from "./Core/Feed";
 
 export { default as AppLayout } from "./AppLayout";

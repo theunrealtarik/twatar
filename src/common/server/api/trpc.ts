@@ -57,7 +57,7 @@ const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
     include: {
       followers: true,
       following: true,
-      posts: true,
+      twats: true,
     },
   });
 

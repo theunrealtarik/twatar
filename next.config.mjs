@@ -8,6 +8,9 @@ if (process.env.NODE_ENV === "development") {
 
 /** @type {import("next").NextConfig} */
 const config = {
+  experimental: {
+    // esmExternals: false,
+  },
   reactStrictMode: true,
   images: {
     domains

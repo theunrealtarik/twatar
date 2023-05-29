@@ -2,13 +2,13 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../api/trpc";
 
 import user from "./user";
-import posts from "./posts";
+import twats from "./twats";
 import tenor from "./tenor";
-import { POST_INCLUDES, selfInteractions } from "../utils";
+import { TWAT_INCLUDES, selfInteractions } from "../utils";
 
 export const appRouter = createTRPCRouter({
   user,
-  posts,
+  twats,
   tenor,
   profile: publicProcedure
     .input(z.object({ userId: z.string() }))
@@ -20,7 +20,7 @@ export const appRouter = createTRPCRouter({
         include: {
           followers: true,
           following: true,
-          posts: true,
+          twats: true,
         },
       });
 
@@ -43,7 +43,7 @@ export const appRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { cursor, limit, filters } = input;
       const userId = ctx.session?.user.id;
-      let posts = await ctx.prisma.post.findMany({
+      let twats = await ctx.prisma.twat.findMany({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
@@ -52,32 +52,32 @@ export const appRouter = createTRPCRouter({
         // where: {
         //   authorId: filters?.profileId ?? undefined,
         // },
-        include: POST_INCLUDES,
+        include: TWAT_INCLUDES,
       });
 
       if (!!filters?.profileId) {
-        posts = posts.filter(({ authorId }) => authorId === filters.profileId);
+        twats = twats.filter(({ authorId }) => authorId === filters.profileId);
       }
 
       let nextCursor: typeof cursor | undefined = undefined;
-      if (posts.length > limit) {
-        const nextItem = posts.pop() as (typeof posts)[number];
+      if (twats.length > limit) {
+        const nextItem = twats.pop() as (typeof twats)[number];
         nextCursor = nextItem.id;
       }
 
       return {
-        posts: posts.map(({ authorId, likes, reposts, ...data }) => {
-          const { selfLike, selfRepost } = selfInteractions(userId ?? "", {
+        twats: twats.map(({ authorId, likes, retwats, ...data }) => {
+          const { selfLike, selfRetwat } = selfInteractions(userId ?? "", {
             likes,
-            reposts,
+            retwats,
           });
 
           return {
             authorId,
             likes,
-            reposts,
+            retwats,
             selfLike,
-            selfRepost,
+            selfRetwat,
             ...data,
           };
         }),

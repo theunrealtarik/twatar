@@ -1,12 +1,12 @@
 import { withSession } from "@/common/middlewares";
 import { type NextPage } from "next";
 
-import { AppLayout, Feed, SharePost } from "@/components";
+import { AppLayout, Feed, TwatCreate } from "@/components";
 
 const Home: NextPage<{ user: IUser }> = ({ user }) => {
   return (
     <AppLayout user={user}>
-      <SharePost user={user} />
+      <TwatCreate user={user} />
       <Feed />
     </AppLayout>
   );

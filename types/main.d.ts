@@ -1,14 +1,14 @@
-import type { User, Post } from "@prisma/client";
+import type { User, Twat } from "@prisma/client";
 import type { DefaultSession } from "next-auth";
 
 declare global {
   interface IUser extends User {
-    posts: Post[];
+    twats: Twat[];
     followers: User[];
     following: User[];
   }
 
-  interface IPost extends Post {}
+  interface ITwat extends Twat {}
 
   type WithSessionReturn = {
     user: IUser | null;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
-import { POST_INCLUDES, selfInteractions } from "@/common/server/utils";
+import { TWAT_INCLUDES, selfInteractions } from "@/common/server/utils";
 
 export default createTRPCRouter({
   get: protectedProcedure
@@ -10,23 +10,23 @@ export default createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const data = await ctx.prisma.post.findUnique({
+      const data = await ctx.prisma.twat.findUnique({
         where: {
           id: input.tid,
         },
-        include: POST_INCLUDES,
+        include: TWAT_INCLUDES,
       });
 
       if (data) {
-        const { selfLike, selfRepost } = selfInteractions(
+        const { selfLike, selfRetwat } = selfInteractions(
           ctx.session.user.id ?? "",
           {
             likes: data?.likes,
-            reposts: data.reposts,
+            retwats: data.retwats,
           }
         );
 
-        return { ...data, selfLike, selfRepost };
+        return { ...data, selfLike, selfRetwat };
       }
 
       return null;
@@ -40,18 +40,18 @@ export default createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       if (input.content.length === 0) return;
-      const data = await ctx.prisma.post.create({
+      const data = await ctx.prisma.twat.create({
         data: {
           authorId: ctx.session.user.id,
           content: input.content,
           embeddedGif: input.gifUrl,
         },
-        include: POST_INCLUDES,
+        include: TWAT_INCLUDES,
       });
-      return { ...data, selfLike: false, selfRepost: false };
+      return { ...data, selfLike: false, selfRetwat: false };
     }),
 
-  repost: protectedProcedure
+  retwat: protectedProcedure
     .input(
       z.object({
         tid: z.string(),
@@ -60,22 +60,22 @@ export default createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      const post = await ctx.prisma.post.findUnique({
+      const twat = await ctx.prisma.twat.findUnique({
         where: {
           id: input.tid,
         },
         include: {
-          reposts: true,
+          retwats: true,
         },
       });
 
-      const userAlreadyReposted = post?.reposts.find(
-        (post) => post.authorId === userId
+      const userAlreadyRetwated = twat?.retwats.find(
+        (retwat) => retwat.authorId === userId
       );
-      if (userAlreadyReposted) return;
+      if (userAlreadyRetwated) return;
 
-      if (post) {
-        return await ctx.prisma.post.create({
+      if (twat) {
+        return await ctx.prisma.twat.create({
           data: {
             content: input.content,
             author: {
@@ -83,9 +83,9 @@ export default createTRPCRouter({
                 id: userId as string,
               },
             },
-            embeddedPost: {
+            embeddedTwat: {
               connect: {
-                id: post.id,
+                id: twat.id,
               },
             },
           },
@@ -99,28 +99,28 @@ export default createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const userId_postId = {
+      const userId_twatId = {
         userId: ctx.session.user.id,
-        postId: input.tid,
+        twatId: input.tid,
       };
 
       const like = await ctx.prisma.like.findUnique({
         where: {
-          userId_postId,
+          userId_twatId,
         },
       });
 
       if (like) {
         await ctx.prisma.like.delete({
           where: {
-            userId_postId,
+            userId_twatId,
           },
         });
         return -1;
       } else {
         await ctx.prisma.like.create({
           data: {
-            ...userId_postId,
+            ...userId_twatId,
           },
         });
         return 1;
