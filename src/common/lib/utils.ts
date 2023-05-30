@@ -18,10 +18,7 @@ export function shortFormatNumber(n: number) {
 }
 
 export function relativeFormatTime(d: Date) {
-  const present = moment();
   const past = moment(d);
-
-  let diff = present.diff(past, "days");
   return past.fromNow();
 }
 
