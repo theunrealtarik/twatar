@@ -1,10 +1,11 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../api/trpc";
+import { createTRPCRouter, publicProcedure } from "./api/trpc";
 
-import user from "./user";
-import twats from "./twats";
-import tenor from "./tenor";
-import { TWAT_INCLUDES, selfInteractions } from "../utils";
+import user from "./routers/user";
+import twats from "./routers/twats";
+import tenor from "./routers/tenor";
+
+import { TWAT_INCLUDES, selfInteractions } from "./utils";
 
 export const appRouter = createTRPCRouter({
   user,
@@ -49,15 +50,15 @@ export const appRouter = createTRPCRouter({
         orderBy: {
           createdAt: "desc",
         },
-        // where: {
-        //   authorId: filters?.profileId ?? undefined,
-        // },
+        where: {
+          authorId: filters?.profileId ?? undefined,
+        },
         include: TWAT_INCLUDES,
       });
 
-      if (!!filters?.profileId) {
-        twats = twats.filter(({ authorId }) => authorId === filters.profileId);
-      }
+      // if (!!filters?.profileId) {
+      //   twats = twats.filter(({ authorId }) => authorId === filters.profileId);
+      // }
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (twats.length > limit) {

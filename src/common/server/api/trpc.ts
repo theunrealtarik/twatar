@@ -4,21 +4,28 @@ import { type Session } from "next-auth";
 import { getServerAuthSession } from "@/common/server/auth";
 import { prisma } from "@/common/server/db";
 
+import ImageKit from "imagekit";
+
 type CreateContextOptions = {
   session: Session | null;
 };
+
+const image = new ImageKit({
+  publicKey: env.IMAGEKIT_PUBLIC_KEY,
+  privateKey: env.IMAGEKIT_PRIVATE_KEY,
+  urlEndpoint: env.IMAGEKIT_ENDPOINT,
+});
 
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma,
+    image,
   };
 };
 
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
-
-  // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
@@ -27,9 +34,9 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 };
 
 import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
 import { ZodError } from "zod";
-import user from "../routers/user";
+import superjson from "superjson";
+import { env } from "@/env.mjs";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

@@ -2,15 +2,16 @@ import { api } from "@/common/server/api";
 import {
   type FC,
   type FormEventHandler,
+  type ChangeEventHandler,
   useState,
   useRef,
   useCallback,
 } from "react";
 import { Button, GifPicker, IconButton, UserAvatar } from "@/components";
+import Image from "next/image";
 
 import { MdOutlineEmojiEmotions } from "react-icons/md";
-import { AiOutlineGif } from "react-icons/ai";
-import Image from "next/image";
+import { BsFilePlayFill, BsFileImageFill } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
 
 interface CreateTwatProps {
@@ -18,14 +19,20 @@ interface CreateTwatProps {
 }
 
 const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
+  const [attachment, setAttachment] = useState<IAttachment | undefined>(
+    undefined
+  );
+
   const [isOpen, setOpen] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
-  const [gifUrl, setGifUrl] = useState<string | undefined>(undefined);
+
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const context = api.useContext();
   const modal = useRef<HTMLDialogElement>(null);
 
   const twat = api.twats.create.useMutation({
+    onError: async () => alert("Failed to publish your Twat 🤷‍♂️"),
     onSuccess: async (data) => {
       context.feed.setInfiniteData({}, (cache) => {
         if (!cache || cache.pages.at(0) == null) return;
@@ -45,10 +52,33 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
   const submitHandler: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (content.length === 0) return;
-    twat.mutateAsync({ content, gifUrl }).finally(() => {
+    twat.mutateAsync({ content, attachment }).finally(() => {
       setContent(() => "");
-      setGifUrl(undefined);
+      clearAttachment();
     });
+  };
+
+  const fileChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const imageFile = files.item(0);
+    if (!imageFile) return;
+
+    const fileReader = new FileReader();
+    fileReader.onload = async (e) => {
+      const result = e.target?.result;
+      if (result) {
+        console.log(result);
+        setAttachment(() => ({
+          name: imageFile.name ?? "",
+          url: result.toString(),
+          type: "image",
+        }));
+      }
+    };
+
+    fileReader.readAsDataURL(imageFile as Blob);
   };
 
   const onOpen = useCallback(
@@ -60,6 +90,10 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
     },
     [isOpen]
   );
+
+  const clearAttachment = useCallback(() => {
+    setAttachment(undefined);
+  }, [attachment]);
 
   if (!user) return null;
   return (
@@ -79,35 +113,46 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
       </div>
 
       <div className="inline-flex w-full justify-between gap-x-2 pl-16">
-        <div className="inline-flex">
+        <div className="relative inline-flex">
           <IconButton type="button" onClick={() => alert("duh?")}>
             <MdOutlineEmojiEmotions size={20} />
           </IconButton>
-          <div className="relative">
-            <IconButton type="button" onClick={() => onOpen(!isOpen)}>
-              <AiOutlineGif size={20} />
-            </IconButton>
 
-            <dialog ref={modal} className="top-10 z-50 p-0 shadow">
-              <GifPicker
-                onChoose={(url) => {
-                  setGifUrl(() => url);
-                  onOpen(false);
-                }}
-              />
-            </dialog>
-          </div>
+          <IconButton type="button" onClick={() => onOpen(!isOpen)}>
+            <BsFilePlayFill size={16} />
+          </IconButton>
+
+          <dialog ref={modal} className="left-10 top-10 z-50 p-0 shadow">
+            <GifPicker
+              onChoose={(attachment) => {
+                setAttachment(() => attachment);
+                onOpen(false);
+              }}
+            />
+          </dialog>
+
+          <IconButton type="button" onClick={() => fileInput.current?.click()}>
+            <BsFileImageFill size={16} />
+          </IconButton>
+
+          <input
+            type="file"
+            ref={fileInput}
+            className="hidden"
+            accept=".png, .jpeg, .jpg"
+            onChange={fileChangeHandler}
+          />
         </div>
         <Button type="submit" disabled={twat.isLoading || content.length === 0}>
           Twat
         </Button>
       </div>
 
-      {gifUrl && (
+      {attachment && attachment.url && (
         <div className="pl-16">
           <div className="relative my-2 h-48 overflow-hidden rounded-lg">
             <IconButton
-              onClick={() => setGifUrl(undefined)}
+              onClick={() => clearAttachment()}
               colorScheme="love"
               className="absolute right-2 top-2 z-20 cursor-pointer"
             >
@@ -115,7 +160,7 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
             </IconButton>
             <Image
               fill
-              src={gifUrl}
+              src={attachment.url}
               alt="Twat Gif"
               className="z-10 bg-gray-200 object-contain dark:bg-neutral-500"
               loading={"lazy"}

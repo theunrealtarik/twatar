@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
 import { TWAT_INCLUDES, selfInteractions } from "@/common/server/utils";
+import { TRPCError } from "@trpc/server";
+
+import type { UploadResponse } from "imagekit/dist/libs/interfaces";
 
 export default createTRPCRouter({
   get: protectedProcedure
@@ -35,20 +38,48 @@ export default createTRPCRouter({
     .input(
       z.object({
         content: z.string().min(1),
-        gifUrl: z.string().url().nullish(),
+        attachment: z
+          .object({
+            name: z.string(),
+            url: z.string().optional(),
+            type: z.enum(["image", "gif"]),
+          })
+          .nullish(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
-      if (input.content.length === 0) return;
-      const data = await ctx.prisma.twat.create({
-        data: {
-          authorId: ctx.session.user.id,
-          content: input.content,
-          embeddedGif: input.gifUrl,
-        },
-        include: TWAT_INCLUDES,
-      });
-      return { ...data, selfLike: false, selfRetwat: false };
+    .mutation(async ({ ctx, input: { content, attachment } }) => {
+      if (content.length === 0) return;
+      try {
+        if (
+          attachment &&
+          attachment.type === "image" &&
+          (attachment.name.endsWith(".png") ||
+            attachment.name.endsWith(".jpg")) &&
+          attachment.url
+        ) {
+          const uploadedImage: UploadResponse = await ctx.image.upload({
+            file: attachment.url,
+            fileName: attachment.name,
+          });
+
+          attachment.url = uploadedImage.url;
+        }
+
+        const data = await ctx.prisma.twat.create({
+          data: {
+            authorId: ctx.session.user.id,
+            content,
+            attachment: attachment?.url,
+          },
+          include: TWAT_INCLUDES,
+        });
+        return { ...data, selfLike: false, selfRetwat: false };
+      } catch {
+        throw new TRPCError({
+          message: "Something Went Wrong",
+          code: "BAD_REQUEST",
+        });
+      }
     }),
 
   retwat: protectedProcedure

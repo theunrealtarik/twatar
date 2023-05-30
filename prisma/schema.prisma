@@ -64,7 +64,7 @@ model Twat {
     createdAt    DateTime @default(now())
     author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId     String
-    embeddedGif  String?
+    attachment   String?
     embeddedTwat Twat?    @relation(name: "repost", fields: [retwatId], references: [id], onDelete: Cascade)
     retwats      Twat[]   @relation(name: "repost")
     retwatId     String?

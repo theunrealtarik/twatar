@@ -7,7 +7,7 @@ import { classNames, randInt } from "@/common/lib/utils";
 import { useDebounce } from "usehooks-ts";
 
 interface GifPickerProps {
-  onChoose: (url: string | undefined) => void;
+  onChoose: (attachment: IAttachment | undefined) => void;
 }
 
 const GifPicker: FC<GifPickerProps> = ({ onChoose }) => {
@@ -45,7 +45,10 @@ const GifPicker: FC<GifPickerProps> = ({ onChoose }) => {
       <div className="mt-2 columns-2 gap-2 p-2">
         {data?.map((category, index) => (
           <div key={category.id + index} className="mb-2 break-inside-avoid">
-            <GifCard data={category} onClick={(url) => onChoose(url)} />
+            <GifCard
+              data={category}
+              onClick={(attachment) => onChoose(attachment)}
+            />
           </div>
         ))}
       </div>
@@ -64,7 +67,7 @@ const GifPicker: FC<GifPickerProps> = ({ onChoose }) => {
 };
 
 const GifCard: FC<{
-  onClick: (url: string | undefined) => void;
+  onClick: (attachment: IAttachment | undefined) => void;
   data: GIF;
 }> = ({ data, onClick }) => {
   const [src, setSrc] = useState(data.media_formats.gif?.url);
@@ -74,7 +77,13 @@ const GifCard: FC<{
         "cursor-pointer overflow-hidden rounded border border-neutral-300",
         "ring-sky-500 ring-opacity-25 hover:ring-4"
       )}
-      onClick={() => onClick(data.media_formats.gif?.url)}
+      onClick={() =>
+        onClick({
+          name: data.title,
+          url: data.media_formats.gif?.url,
+          type: "gif",
+        })
+      }
     >
       <Image
         alt={data.title}

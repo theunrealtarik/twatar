@@ -15,7 +15,11 @@ const server = z.object({
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
 
-  TENOR_SECRET: z.string()
+  TENOR_SECRET: z.string(),
+
+  IMAGEKIT_PUBLIC_KEY: z.string(),
+  IMAGEKIT_PRIVATE_KEY: z.string(),
+  IMAGEKIT_ENDPOINT: z.string()
 });
 
 const client = z.object({
@@ -33,7 +37,10 @@ const processEnv = {
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
-  TENOR_SECRET: process.env.TENOR_SECRET
+  TENOR_SECRET: process.env.TENOR_SECRET,
+  IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
+  IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
+  IMAGEKIT_ENDPOINT: process.env.IMAGEKIT_ENDPOINT,
 };
 
 const merged = server.merge(client);

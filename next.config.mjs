@@ -1,6 +1,6 @@
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
 
-const domains = ["cdn.discordapp.com", "media.tenor.com"]
+const domains = ["cdn.discordapp.com", "media.tenor.com", "ik.imagekit.io"]
 
 if (process.env.NODE_ENV === "development") {
   domains.push("avatars.githubusercontent.com", "cloudflare-ipfs.com")
@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === "development") {
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
-    // esmExternals: false,
+    esmExternals: false,
   },
   reactStrictMode: true,
   images: {

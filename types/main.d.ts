@@ -14,6 +14,14 @@ declare global {
     user: IUser | null;
   };
 
+  interface IAttachment {
+    name: string;
+    url: string | undefined;
+    type: AttachmentType;
+  }
+
+  type AttachmentType = "image" | "gif";
+
   // tenor
   interface TenorResponse {
     results: GIF[];

@@ -38,7 +38,7 @@ const TwatCard: FC<TwatCardProps> = ({ data }) => {
     <div className="space-y-1 py-4">
       <Header author={data.author} createdAt={data.createdAt} />
       <p className="text-md line-clamp-3 md:text-lg">{data.content}</p>
-      <Attachment url={data.embeddedGif} />
+      <Attachment url={data.attachment} />
       {data.embeddedTwat && (
         <div className="rounded-xl border border-gray-300 p-4 dark:border-neutral-600">
           <Header
@@ -54,7 +54,7 @@ const TwatCard: FC<TwatCardProps> = ({ data }) => {
             }}
           >
             <p>{data.embeddedTwat.content}</p>
-            <Attachment url={data.embeddedTwat.embeddedGif} />
+            <Attachment url={data.embeddedTwat.attachment} />
           </Link>
         </div>
       )}
