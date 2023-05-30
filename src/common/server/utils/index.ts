@@ -27,6 +27,9 @@ export const TWAT_INCLUDES = {
   },
 };
 
+/**
+ * Calculates self interactions for a user.
+ */
 export function selfInteractions(
   sessionUserId: string,
   {

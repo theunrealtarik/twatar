@@ -6,6 +6,10 @@ import { TRPCError } from "@trpc/server";
 import type { UploadResponse } from "imagekit/dist/libs/interfaces";
 
 export default createTRPCRouter({
+  /**
+   * Retrieves a twat by its ID.
+   * @returns {Promise<object|null>} - A promise that resolves to the twat object if found, or `null` if not found.
+   */
   get: protectedProcedure
     .input(
       z.object({
@@ -34,6 +38,14 @@ export default createTRPCRouter({
 
       return null;
     }),
+  /**
+   * @description Creates a new Twat with the provided content and optional attachment. The `input` object should contain the `content` property representing the text content of the twat. An optional `attachment` object can be included, specifying the `name`, `url`, and `type` properties for the attachment. The `type` should be either "image" or "gif".
+   *
+   * If the attachment is an image with a valid file extension (e.g., ".png" or ".jpg") and has a URL provided, it will be uploaded. The URL of the uploaded image will replace the original attachment URL.
+   *
+   * The promise resolves to the created twat object on successful creation. If an error occurs during the twat creation process, a `TRPCError` is thrown with the corresponding error message and code.
+   * Requires user authentication to create a twat on behalf of the authenticated user.
+   */
   create: protectedProcedure
     .input(
       z.object({

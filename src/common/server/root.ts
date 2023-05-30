@@ -11,6 +11,10 @@ export const appRouter = createTRPCRouter({
   user,
   twats,
   tenor,
+  /**
+   * Retrieves user profile information.
+   * @returns {Promise<IUser>} - The user profile object.
+   */
   profile: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -28,6 +32,10 @@ export const appRouter = createTRPCRouter({
       return user;
     }),
 
+  /**
+   * Retrieves a feed of twats.
+   * @returns {Promise<object>} - The feed object containing twats and the next cursor for pagination.
+   */
   feed: publicProcedure
     .input(
       z.object({

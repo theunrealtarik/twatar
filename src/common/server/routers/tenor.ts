@@ -14,6 +14,17 @@ const fetch = axios.create({
 });
 
 export default createTRPCRouter({
+  /**
+   * Retrieves a list of GIFs.
+   *
+   * @returns {Promise<object>} - A promise that resolves to the retrieved GIFs and pagination information.
+   * @description Retrieves a list of GIFs based on the provided input parameters. The `cursor` property can be used for pagination, fetching the next set of results. The `query` property allows filtering GIFs by a specific search keyword.
+   *
+   * If no `query` is provided, the endpoint retrieves a list of featured GIFs. If a `query` is provided, it performs a search and returns matching GIFs.
+   *
+   * The promise resolves to an object with the retrieved GIFs and pagination information. The `next` property indicates the cursor for the next page of results (if available), and the `gifs` property contains an array of the retrieved GIFs.
+   */
+
   gifs: publicProcedure
     .input(
       z.object({

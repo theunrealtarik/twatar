@@ -2,6 +2,11 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
 
 export default createTRPCRouter({
+  /**
+   * Follows or unfollows a user.
+   * @returns {Promise<void>} - A promise that resolves once the operation is completed.
+   */
+
   following: protectedProcedure
     .input(
       z.object({
