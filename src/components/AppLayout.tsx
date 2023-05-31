@@ -12,9 +12,10 @@ import { Button, Input, UserAvatar } from "@/components";
 interface AppLayoutProps {
   children: ReactNode;
   user: IUser | null;
+  hideHeader?: boolean;
 }
 
-const AppLayout: FC<AppLayoutProps> = ({ user, children }) => {
+const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
   const router = useRouter();
   const selectedTab = SideMenuLinks.get(router.pathname);
 
@@ -24,7 +25,7 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children }) => {
         <div className="">
           <Link href="/" className="w-fit">
             <div className="relative h-8 w-8 md:h-20 md:w-20">
-              <Image fill alt="twtar logo" src="logo.svg" />
+              <Image fill alt="twtar logo" src="/logo.svg" />
             </div>
           </Link>
           <ul className="flex h-full flex-col gap-y-2">
@@ -80,9 +81,11 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children }) => {
       </aside>
 
       <div className="col-span-11 md:col-span-10 lg:col-span-8">
-        <div className="sticky top-0 z-50 border-b border-b-gray-300 bg-opacity-25 p-4 font-bold backdrop-blur-md  dark:border-b-neutral-600 dark:bg-opacity-0">
-          {selectedTab?.label}
-        </div>
+        {!props.hideHeader && (
+          <div className="sticky top-0 z-50 border-b border-b-gray-300 bg-opacity-25 p-4 font-bold backdrop-blur-md  dark:border-b-neutral-600 dark:bg-opacity-0">
+            {selectedTab?.label}
+          </div>
+        )}
         <div>{children}</div>
       </div>
       <aside className="sticky right-0 top-0 col-span-2 hidden h-screen border-l border-gray-300 p-4 dark:border-neutral-600 lg:block">

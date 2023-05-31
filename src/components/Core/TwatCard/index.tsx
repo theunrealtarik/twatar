@@ -1,17 +1,18 @@
 import { RouterOutputs, api } from "@/common/server/api";
 import { FC, useCallback, useState } from "react";
 
-import UserAvatar from "../Display/UserAvatar";
-import Button from "../UI/Button";
-import Input from "../UI/Input";
-import IconButton from "../UI/IconButton";
+import Button from "@/components/UI/Button";
+import Input from "@/components/UI/Input";
+import IconButton from "@/components/UI/IconButton";
 
 import Link from "next/link";
-import Image from "next/image";
 
 import { FiRepeat } from "react-icons/fi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { classNames, relativeFormatTime } from "@/common/lib/utils";
+import { classNames } from "@/common/lib/utils";
+
+import TwatHeader from "./fragments/TwatHeader";
+import TwatAttachment from "./fragments/TwatAttachment";
 
 interface TwatCardProps {
   data: RouterOutputs["feed"]["twats"][number];
@@ -36,12 +37,14 @@ const TwatCard: FC<TwatCardProps> = ({ data }) => {
 
   return (
     <div className="space-y-1 py-4">
-      <Header author={data.author} createdAt={data.createdAt} />
-      <p className="text-md line-clamp-3 md:text-lg">{data.content}</p>
-      <Attachment url={data.attachment} />
+      <TwatHeader author={data.author} createdAt={data.createdAt} />
+      <Link href={{ pathname: "twat/".concat(data.id) }}>
+        <p className="text-md line-clamp-3 md:text-lg">{data.content}</p>
+      </Link>
+      <TwatAttachment url={data.attachment} />
       {data.embeddedTwat && (
         <div className="rounded-xl border border-gray-300 p-4 dark:border-neutral-600">
-          <Header
+          <TwatHeader
             author={{ ...data.embeddedTwat.author }}
             createdAt={data.embeddedTwat.createdAt}
           />{" "}
@@ -54,7 +57,7 @@ const TwatCard: FC<TwatCardProps> = ({ data }) => {
             }}
           >
             <p>{data.embeddedTwat.content}</p>
-            <Attachment url={data.embeddedTwat.attachment} />
+            <TwatAttachment url={data.embeddedTwat.attachment} />
           </Link>
         </div>
       )}
@@ -113,60 +116,6 @@ const TwatCard: FC<TwatCardProps> = ({ data }) => {
           </Button>
         </div>
       )}
-    </div>
-  );
-};
-
-interface TwatHeaderProps {
-  author: {
-    id: string;
-    name: string | null;
-    image: string | null;
-  };
-  createdAt: Date;
-}
-
-const Attachment: FC<{ url: string | null }> = ({ url }) => {
-  const [isError, setError] = useState<boolean>(false);
-  if (!url) return null;
-
-  return (
-    <div className="relative h-96 w-full overflow-hidden rounded-lg shadow">
-      {isError ? (
-        <div>
-          <span>there was some error loading this cool GIF 😑</span>
-        </div>
-      ) : (
-        <Image
-          fill
-          alt=""
-          className="bg-gray-200 object-contain dark:bg-neutral-950"
-          src={url}
-          onError={() => setError(() => true)}
-        />
-      )}
-    </div>
-  );
-};
-
-const Header: FC<TwatHeaderProps> = ({ author, createdAt }) => {
-  return (
-    <div className="inline-flex w-full items-center justify-start gap-x-2">
-      <UserAvatar size="sm" src={author.image} />
-      <div className="inline-flex space-x-4">
-        <Link
-          href={{
-            pathname: "profile",
-            query: {
-              id: author.id,
-            },
-          }}
-          className="cursor-pointer font-bold hover:underline"
-        >
-          {author.name}
-        </Link>
-        <span className="text-gray-300">{relativeFormatTime(createdAt)}</span>
-      </div>
     </div>
   );
 };
