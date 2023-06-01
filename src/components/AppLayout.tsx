@@ -6,7 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { classNames, signIn } from "@/common/lib/utils";
 
-import { FiHome, FiLogIn, FiLogOut, FiSettings, FiUser } from "react-icons/fi";
+import {
+  FiHome,
+  FiLogIn,
+  FiLogOut,
+  FiSearch,
+  FiSettings,
+  FiUser,
+} from "react-icons/fi";
 import { Button, Input, UserAvatar } from "@/components";
 
 interface AppLayoutProps {
@@ -89,7 +96,9 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
         <div>{children}</div>
       </div>
       <aside className="sticky right-0 top-0 col-span-2 hidden h-screen border-l border-gray-300 p-4 dark:border-neutral-600 lg:block">
-        <Input placeholder="search ..." />
+        <form action="/search">
+          <Input placeholder="search ..." name="q" className="w-full" />
+        </form>
       </aside>
     </main>
   );
@@ -110,6 +119,14 @@ const SideMenuLinks = new Map<string, SideMenuElement>([
       label: "Profile",
       authRequired: true,
       Icon: FiUser,
+    },
+  ],
+  [
+    "/search",
+    {
+      label: "Search",
+      authRequired: true,
+      Icon: FiSearch,
     },
   ],
   [

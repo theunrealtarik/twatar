@@ -18,7 +18,7 @@ for (let i = 0; i < 50; i++) {
         },
         following: {
           connect: {
-            id: "clhts0qg10000scw4cz9yn7dx",
+            id: "clid78nwn0000sc14k8acs7j9",
           },
         },
       },

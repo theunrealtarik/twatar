@@ -11,6 +11,45 @@ export const appRouter = createTRPCRouter({
   user,
   twats,
   tenor,
+
+  users: publicProcedure
+    .input(
+      z.object({
+        cursor: z.string().nullish(),
+        name: z.string().nullish(),
+        limit: z.number().default(15),
+      })
+    )
+    .query(async ({ ctx, input: { cursor, limit, name } }) => {
+      let users = await ctx.prisma.user.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (users.length > limit) {
+        const nextItem = users.pop() as (typeof users)[number];
+        nextCursor = nextItem.id;
+      }
+
+      if (Boolean(name)) {
+        users = users.filter(
+          (user) =>
+            user.name
+              ?.toLocaleLowerCase()
+              ?.startsWith(name?.toLowerCase() ?? "") ||
+            user.name?.toLowerCase()?.includes(name?.toLowerCase() ?? "")
+        );
+      }
+
+      console.log(users);
+
+      return {
+        users,
+        nextCursor,
+      };
+    }),
+
   /**
    * Retrieves user profile information.
    * @returns {Promise<IUser>} - The user profile object.
@@ -45,6 +84,7 @@ export const appRouter = createTRPCRouter({
           .object({
             profileId: z.string().nullish(),
             followingOnly: z.boolean().nullish(),
+            contains: z.string().nullish(),
           })
           .nullish(),
       })
@@ -72,6 +112,14 @@ export const appRouter = createTRPCRouter({
       if (twats.length > limit) {
         const nextItem = twats.pop() as (typeof twats)[number];
         nextCursor = nextItem.id;
+      }
+
+      if (!!filters?.contains) {
+        twats = twats.filter(
+          ({ content }) =>
+            content.startsWith(filters.contains ?? "") ||
+            content.includes(filters.contains ?? "")
+        );
       }
 
       return {

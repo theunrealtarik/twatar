@@ -60,7 +60,7 @@ export function calculateXp(amount: number, user: User) {
     level += 1;
   }
 
-  if (xp <= 0 && amount < 0) {
+  if (xp <= 0 && amount < 0 && user.level > 0) {
     xp = previousLevel + amount;
     level -= 1;
   }
