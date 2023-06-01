@@ -13,6 +13,7 @@ import { classNames } from "@/common/lib/utils";
 
 import TwatHeader from "./fragments/TwatHeader";
 import TwatAttachment from "./fragments/TwatAttachment";
+import EmbeddedTwat from "./fragments/EmbeddedTwat";
 
 interface TwatCardProps {
   data: RouterOutputs["feed"]["twats"][number];
@@ -60,25 +61,7 @@ const TwatCard: FC<TwatCardProps> = ({
         )}
       </p>
       <TwatAttachment url={data.attachment} />
-      {data.embeddedTwat && (
-        <div className="rounded-xl border border-gray-300 p-4 dark:border-neutral-600">
-          <TwatHeader
-            author={{ ...data.embeddedTwat.author }}
-            createdAt={data.embeddedTwat.createdAt}
-          />{" "}
-          <Link
-            href={{
-              pathname: "",
-              query: {
-                id: data.embeddedTwat.id,
-              },
-            }}
-          >
-            <p>{data.embeddedTwat.content}</p>
-            <TwatAttachment url={data.embeddedTwat.attachment} />
-          </Link>
-        </div>
-      )}
+      {data.embeddedTwat && <EmbeddedTwat data={data.embeddedTwat} />}
       <div className="inline-flex gap-x-6">
         <div className="inline-flex items-center space-x-1">
           <IconButton
