@@ -16,9 +16,15 @@ import TwatAttachment from "./fragments/TwatAttachment";
 
 interface TwatCardProps {
   data: RouterOutputs["feed"]["twats"][number];
+  lineClamp?: boolean;
+  link?: boolean;
 }
 
-const TwatCard: FC<TwatCardProps> = ({ data }) => {
+const TwatCard: FC<TwatCardProps> = ({
+  data,
+  lineClamp = true,
+  link = true,
+}) => {
   const [isVisible, setVisible] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
 
@@ -38,9 +44,21 @@ const TwatCard: FC<TwatCardProps> = ({ data }) => {
   return (
     <div className="space-y-1 py-4">
       <TwatHeader author={data.author} createdAt={data.createdAt} />
-      <Link href={{ pathname: "twat/".concat(data.id) }}>
-        <p className="text-md line-clamp-3 md:text-lg">{data.content}</p>
-      </Link>
+
+      <p
+        className={classNames(
+          "text-md md:text-lg",
+          lineClamp ? "line-clamp-2" : "line-clamp-none"
+        )}
+      >
+        {link ? (
+          <Link href={{ pathname: "/twat/".concat(data.id) }}>
+            {data.content}
+          </Link>
+        ) : (
+          data.content
+        )}
+      </p>
       <TwatAttachment url={data.attachment} />
       {data.embeddedTwat && (
         <div className="rounded-xl border border-gray-300 p-4 dark:border-neutral-600">
