@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
 import {
+  Folders,
   TWAT_INCLUDES,
   calculateXp,
   selfInteractions,
@@ -73,9 +74,18 @@ export default createTRPCRouter({
             attachment.name.endsWith(".jpg")) &&
           attachment.url
         ) {
+          const buffer = Buffer.from(attachment.url, "base64");
+          if (buffer.length > 5 * 10 ** 6)
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              cause: "File Size",
+              message: "attachments cannot be more than 3MB in size",
+            });
+
           const uploadedImage: UploadResponse = await ctx.image.upload({
             file: attachment.url,
             fileName: attachment.name,
+            folder: Folders.Twats,
           });
 
           attachment.url = uploadedImage.url;

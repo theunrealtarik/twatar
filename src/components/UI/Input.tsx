@@ -9,7 +9,7 @@ interface InputProps
     VariantProps<typeof InputStyles> {}
 
 const InputStyles = cva(
-  "px-4 py-2 rounded-full border border-gray-300 dark:border-neutral-600 bg-gray-100 dark:bg-zinc-950 text-gray-500 dark:text-gray-500 font-medium",
+  "px-4 py-2 rounded-full border dark:placeholder:text-zinc-500 border-gray-300 dark:border-neutral-600 bg-gray-100 dark:bg-zinc-950 text-gray-600 dark:text-gray-400 font-medium dark:disabled:bg-neutral-800 dark:disabled:text-neutral-600 disabled:bg-gray-200 disabled:text-gray-400",
   {
     variants: {
       colorScheme: {

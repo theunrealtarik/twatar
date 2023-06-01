@@ -134,8 +134,8 @@ const Profile: NextPage<ProfilePageProps> = ({ user }) => {
         <div className="px-6">
           <div className="mt-4">
             <h4 className="text-2xl font-bold">{profile.data?.name}</h4>
-            <span className="font-medium text-gray-400">
-              {profile.data?.id}
+            <span className="mt-1 line-clamp-4 font-medium text-gray-600">
+              {profile.data?.bio}
             </span>
           </div>
           <div className="my-2 inline-flex items-center justify-start gap-x-2 text-gray-400">

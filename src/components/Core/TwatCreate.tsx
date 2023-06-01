@@ -68,6 +68,11 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
     const fileReader = new FileReader();
     fileReader.onload = async (e) => {
       const result = e.target?.result;
+
+      if (imageFile.size >= 3_000_000) {
+        alert("Twat attachments cannot be more than 3MB in size");
+      }
+
       if (result) {
         setAttachment(() => ({
           name: imageFile.name ?? "",

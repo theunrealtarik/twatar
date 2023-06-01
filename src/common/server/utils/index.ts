@@ -67,3 +67,8 @@ export function calculateXp(amount: number, user: User) {
 
   return { xp, level };
 }
+
+export enum Folders {
+  ProfilePictures = "profiles_pictures",
+  Twats = "twats",
+}

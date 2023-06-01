@@ -11,7 +11,7 @@ interface UserAvatarProps extends VariantProps<typeof UserAvatarStyles> {
 }
 
 const UserAvatarStyles = cva(
-  "relative overflow-hidden rounded-full grid place-content-center bg-gray-200",
+  "relative overflow-hidden grid place-content-center bg-gray-200 dark:bg-neutral-800",
   {
     variants: {
       size: {
@@ -19,25 +19,31 @@ const UserAvatarStyles = cva(
         md: "w-16 h-16",
         lg: "w-24 h-24",
       },
+      intent: {
+        rounded: "rounded-full",
+        square: "rounded-lg",
+      },
     },
     defaultVariants: {
       size: "md",
+      intent: "rounded",
     },
   }
 );
 
-const UserAvatar: FC<UserAvatarProps> = ({ size, src, ...props }) => {
+const UserAvatar: FC<UserAvatarProps> = ({ size, intent, src, ...props }) => {
   const [isError, setError] = useState<boolean>(false);
 
   return (
     <div
       className={UserAvatarStyles({
         size,
+        intent,
         className: props.className,
       })}
     >
       {isError ? (
-        <FiUser size={25} className="text-neutral-600" />
+        <FiUser size={25} className="text-neutral-600 dark:text-white" />
       ) : (
         <Image
           src={src ?? ""}

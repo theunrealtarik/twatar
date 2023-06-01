@@ -52,4 +52,28 @@ export default createTRPCRouter({
         ]);
       }
     }),
+
+  /**
+   * Updates user's profile
+   */
+  update: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().max(25).nullish(),
+        bio: z.string().max(100).nullish(),
+        image: z.string().url().nullish(),
+        banner: z.string().url().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      try {
+        return await ctx.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: { ...input },
+        });
+      } catch (error) {}
+    }),
 });
