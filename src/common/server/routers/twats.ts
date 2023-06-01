@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
-import { TWAT_INCLUDES, selfInteractions } from "@/common/server/utils";
+import {
+  TWAT_INCLUDES,
+  calculateXp,
+  selfInteractions,
+} from "@/common/server/utils";
 import { TRPCError } from "@trpc/server";
 
 import type { UploadResponse } from "imagekit/dist/libs/interfaces";
@@ -109,15 +113,28 @@ export default createTRPCRouter({
         },
         include: {
           retwats: true,
+          author: true,
         },
       });
 
       const userAlreadyRetwated = twat?.retwats.find(
         (retwat) => retwat.authorId === userId
       );
-      if (userAlreadyRetwated) return;
 
+      if (userAlreadyRetwated) return;
       if (twat) {
+        const { xp, level } = calculateXp(50, twat.author);
+
+        await ctx.prisma.user.update({
+          where: {
+            id: twat.authorId,
+          },
+          data: {
+            xp,
+            level,
+          },
+        });
+
         return await ctx.prisma.twat.create({
           data: {
             content: input.content,
@@ -147,25 +164,59 @@ export default createTRPCRouter({
         twatId: input.tid,
       };
 
-      const like = await ctx.prisma.like.findUnique({
-        where: {
-          userId_twatId,
-        },
-      });
-
-      if (like) {
-        await ctx.prisma.like.delete({
+      const [like, twat] = await ctx.prisma.$transaction([
+        ctx.prisma.like.findUnique({
           where: {
             userId_twatId,
           },
-        });
-        return -1;
-      } else {
-        await ctx.prisma.like.create({
-          data: {
-            ...userId_twatId,
+        }),
+        ctx.prisma.twat.findUnique({
+          where: {
+            id: input.tid,
           },
-        });
+          include: {
+            author: true,
+          },
+        }),
+      ]);
+
+      if (like && twat) {
+        const { xp, level } = calculateXp(-10, twat.author);
+        await ctx.prisma.$transaction([
+          ctx.prisma.like.delete({
+            where: {
+              userId_twatId,
+            },
+          }),
+          ctx.prisma.user.update({
+            where: {
+              id: twat?.authorId,
+            },
+            data: {
+              xp,
+              level,
+            },
+          }),
+        ]);
+        return -1;
+      } else if (twat) {
+        const { xp, level } = calculateXp(10, twat.author);
+        await ctx.prisma.$transaction([
+          ctx.prisma.like.create({
+            data: {
+              ...userId_twatId,
+            },
+          }),
+          ctx.prisma.user.update({
+            where: {
+              id: twat?.authorId,
+            },
+            data: {
+              xp,
+              level,
+            },
+          }),
+        ]);
         return 1;
       }
     }),

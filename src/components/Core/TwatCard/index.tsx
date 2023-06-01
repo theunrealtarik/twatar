@@ -136,8 +136,6 @@ const updateTwatCache = async (
         ...page,
         twats: page.twats.map((cachedTwat) => {
           if (cachedTwat.id === tid) {
-            console.log(updatedTwat);
-
             return updatedTwat || cachedTwat;
           }
           return cachedTwat;

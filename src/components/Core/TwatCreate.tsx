@@ -69,7 +69,6 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
     fileReader.onload = async (e) => {
       const result = e.target?.result;
       if (result) {
-        console.log(result);
         setAttachment(() => ({
           name: imageFile.name ?? "",
           url: result.toString(),

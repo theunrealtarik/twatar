@@ -48,6 +48,8 @@ model User {
     followers     User[]    @relation(name: "Followers")
     following     User[]    @relation(name: "Followers")
     createdAt     DateTime  @default(now())
+    xp            Int       @default(0)
+    level         Int       @default(1)
 }
 
 model VerificationToken {

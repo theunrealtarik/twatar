@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
+import { calculateXp } from "../utils";
 
 export default createTRPCRouter({
   /**
@@ -22,7 +23,12 @@ export default createTRPCRouter({
         },
       });
 
-      if (input.targetId !== userId && ctx.user) {
+      if (input.targetId !== userId && ctx.user && target) {
+        const { xp, level } = calculateXp(
+          input.action === "follow" ? 50 : -50,
+          target
+        );
+
         await ctx.prisma.$transaction([
           ctx.prisma.user.update({
             where: { id: userId },
@@ -32,6 +38,15 @@ export default createTRPCRouter({
                   id: target?.id,
                 },
               },
+            },
+          }),
+          ctx.prisma.user.update({
+            where: {
+              id: target.id,
+            },
+            data: {
+              xp,
+              level,
             },
           }),
         ]);

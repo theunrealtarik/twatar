@@ -71,10 +71,10 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
           </div>
         ) : (
           <Button
-            className="hidden w-full justify-center text-lg md:inline-flex"
+            className="w-full justify-center text-lg md:inline-flex"
             onClick={() => void signIn()}
           >
-            <span>Login</span>
+            <span className="hidden md:block">Login</span>
             <FiLogIn />
           </Button>
         )}
