@@ -1,29 +1,32 @@
-import { api } from "@/common/server/api";
 import { withSession } from "@/common/middlewares";
+import { api } from "@/common/server/api";
 import type { NextPage } from "next";
 
-import { useRouter } from "next/router";
 import { classNames, shortFormatNumber, signIn } from "@/common/lib/utils";
-
-import { FiCalendar } from "react-icons/fi";
 import {
   AppLayout,
   Button,
+  EditProfile,
   Error,
   Feed,
   Loading,
   UserAvatar,
 } from "@/components";
-
+import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+
+import { FiCalendar } from "react-icons/fi";
+import { useState } from "react";
+import Image from "next/image";
 
 const Profile: NextPage<ProfilePageProps> = ({ user }) => {
   const router = useRouter();
-
   const following = api.user.following.useMutation({
     onSuccess: () => profile.refetch(),
   });
+
   const profile = api.profile.useQuery({ userId: router.query.id as string });
+  const [isOpen, setOpen] = useState<boolean>(false);
 
   if (profile.isError) {
     return (
@@ -74,13 +77,22 @@ const Profile: NextPage<ProfilePageProps> = ({ user }) => {
     <AppLayout user={user}>
       <div className="space-y-2">
         <div className="flex flex-col">
-          <div className="h-32 w-full bg-gray-200 dark:bg-neutral-800"></div>
+          <div className="relative h-32 w-full bg-gray-200 dark:bg-neutral-800">
+            {profile.data.banner && (
+              <Image
+                fill
+                alt={profile.data.name?.concat("-banner") ?? ""}
+                src={profile.data.banner}
+                className="object-cover"
+              />
+            )}
+          </div>
           <div className="-mt-16 inline-flex w-full justify-between px-6">
             <div className="inline-flex w-full items-end justify-between">
               <UserAvatar
                 size="lg"
                 src={profile.data?.image ?? null}
-                className="w-23 ring-6 h-32 w-32 ring-4 ring-white dark:ring-sky-600"
+                className="w-23 ring-6 h-32 w-32 ring-2 ring-sky-600"
               />
 
               <div className="inline-flex w-1/2 items-center justify-end gap-x-2">
@@ -102,7 +114,15 @@ const Profile: NextPage<ProfilePageProps> = ({ user }) => {
                     </div>
                   </div>
                 )}
-
+                {user && (
+                  <Button
+                    className="w-12 justify-center"
+                    intent="secondary"
+                    onClick={() => setOpen(true)}
+                  >
+                    Edit
+                  </Button>
+                )}
                 {profile.data?.id !== user?.id && (
                   <div className="flex flex-col justify-end">
                     {isUserFollower ? (
@@ -162,6 +182,8 @@ const Profile: NextPage<ProfilePageProps> = ({ user }) => {
         <span>Twats</span>
       </h4>
       <Feed filters={{ profileId: profile.data?.id }} />
+
+      <EditProfile user={user} isOpen={isOpen} onClose={() => setOpen(false)} />
     </AppLayout>
   );
 };

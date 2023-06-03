@@ -60,6 +60,9 @@ const SearchTab: FC<{ label: string; Icon: IconType }> = ({ label, Icon }) => {
   );
 };
 
+/**
+ * A component that displays a list of users
+ */
 const UsersList: FC<{
   filters: {
     username?: string | undefined;

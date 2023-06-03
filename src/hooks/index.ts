@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 import useLocalStorage from "use-local-storage-state";
 
 export function useScroll(element: HTMLElement | null) {
@@ -48,4 +48,73 @@ export function useDebounceState<T>(duration: number, value: T) {
   }, [value]);
 
   return debounceValue;
+}
+
+interface IUseFileHandlerOptions {
+  /**
+   * Maximum file size in bytes
+   */
+  maxFileSize?: number;
+  onlyImages?: boolean;
+  onError?: () => void;
+  onSuccess?: () => void;
+  onNoFiles?: () => void;
+}
+
+export function useFileHandler({
+  maxFileSize,
+  onlyImages,
+  ...options
+}: IUseFileHandlerOptions) {
+  const [file, setFile] = useState<
+    { base64: string; fileName: string } | undefined
+  >(undefined);
+
+  const handler = useCallback(
+    (
+      event: ChangeEvent<HTMLInputElement>,
+      callback?: (result: string | ArrayBuffer, file: File) => void
+    ) => {
+      const files = event.target.files as FileList;
+      const allowedExtensions = /(\.png|\.jpeg|\.jpg)$/i;
+
+      if (!files || files.length === 0) {
+        if (options.onNoFiles != undefined) options.onNoFiles();
+        return;
+      }
+
+      const fileReader = new FileReader();
+      const file = files.item(0) as File;
+
+      if (onlyImages && !allowedExtensions.exec(event.target.value)) {
+        alert("Please select a PNG or JPEG file, dummy");
+        event.target.value = "";
+        return;
+      }
+
+      fileReader.onload = () => {
+        const result = fileReader.result;
+        if (maxFileSize && file.size >= maxFileSize) {
+          if (maxFileSize != undefined)
+            alert("Image exceeds maximum file size");
+          return;
+        }
+        if (result) {
+          setFile(() => ({
+            base64: result.toString(),
+            fileName: file.name,
+          }));
+          if (callback != undefined) callback(result, file);
+        }
+      };
+
+      fileReader.readAsDataURL(file as Blob);
+    },
+    [setFile]
+  );
+
+  return {
+    file,
+    handler,
+  };
 }
