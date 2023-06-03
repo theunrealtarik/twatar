@@ -31,8 +31,10 @@ const HashtagsList: FC<HashtagsListProps> = ({}) => {
                 <p className="w-full text-lg font-bold dark:text-neutral-200">
                   {hashtag.name}
                 </p>
+                {index === 0 && <span>🔥</span>}
                 <span className="font-medium text-gray-500">
-                  {shortFormatNumber(hashtag._count.twats)} Twats
+                  {shortFormatNumber(hashtag._count.twats)}{" "}
+                  {"Twat".concat(hashtag._count.twats === 1 ? "" : "s")}
                 </span>
               </div>
             </Link>
