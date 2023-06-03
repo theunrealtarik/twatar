@@ -54,7 +54,7 @@ export default createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        content: z.string().min(1),
+        content: z.string().min(1).max(300),
         attachment: z
           .object({
             name: z.string(),

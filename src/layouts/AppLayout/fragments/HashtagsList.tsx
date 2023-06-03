@@ -27,8 +27,8 @@ const HashtagsList: FC<HashtagsListProps> = ({}) => {
               }}
               className="w-full rounded-lg px-2 py-1 transition hover:bg-gray-200 dark:hover:bg-neutral-900"
             >
-              <div className="space-y-1">
-                <p className="w-full text-lg font-bold dark:text-neutral-200">
+              <div className="space-y-1" title={hashtag.name}>
+                <p className="w-full truncate text-lg font-bold dark:text-neutral-200">
                   {hashtag.name}
                 </p>
                 {index === 0 && <span>🔥</span>}

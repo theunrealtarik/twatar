@@ -96,6 +96,7 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
           disabled={twat.isLoading}
           onChange={(e) => setContent(() => e.target.value)}
           placeholder="wtf is going on ..."
+          maxLength={300}
           className="min-h-[10px] flex-1 resize-y rounded-lg text-xl shadow-none outline-none dark:bg-black"
         ></textarea>
       </div>
@@ -131,9 +132,15 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
             onChange={fileChangeHandler}
           />
         </div>
-        <Button type="submit" disabled={twat.isLoading || content.length === 0}>
-          Twat
-        </Button>
+        <div className="space-x-4">
+          <span>{content.length}/300</span>
+          <Button
+            type="submit"
+            disabled={twat.isLoading || content.length === 0}
+          >
+            Twat
+          </Button>
+        </div>
       </div>
 
       {attachment && attachment.url && (
