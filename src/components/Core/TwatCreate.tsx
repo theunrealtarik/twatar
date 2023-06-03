@@ -13,6 +13,7 @@ import Image from "next/image";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { BsFilePlayFill, BsFileImageFill } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
+import { useFileHandler } from "@/hooks";
 
 interface CreateTwatProps {
   user: IUser | null;
@@ -30,6 +31,7 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
 
   const context = api.useContext();
   const modal = useRef<HTMLDialogElement>(null);
+  const image = useFileHandler({ maxFileSize: 3_000_000, onlyImages: true });
 
   const twat = api.twats.create.useMutation({
     onError: async () => alert("Failed to publish your Twat 🤷‍♂️"),
@@ -58,32 +60,14 @@ const CreateTwat: FC<CreateTwatProps> = ({ user }) => {
     });
   };
 
-  const fileChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    const imageFile = files.item(0);
-    if (!imageFile) return;
-
-    const fileReader = new FileReader();
-    fileReader.onload = async (e) => {
-      const result = e.target?.result;
-
-      if (imageFile.size >= 3_000_000) {
-        alert("Twat attachments cannot be more than 3MB in size");
-      }
-
-      if (result) {
-        setAttachment(() => ({
-          name: imageFile.name ?? "",
-          url: result.toString(),
-          type: "image",
-        }));
-      }
-    };
-
-    fileReader.readAsDataURL(imageFile as Blob);
-  };
+  const fileChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) =>
+    image.handler(e, (result, file) => {
+      setAttachment(() => ({
+        name: file.name ?? "",
+        url: result.toString(),
+        type: "image",
+      }));
+    });
 
   const onOpen = useCallback(
     (state: boolean = true) => {
