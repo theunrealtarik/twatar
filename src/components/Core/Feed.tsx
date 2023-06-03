@@ -44,6 +44,16 @@ const Feed: FC<FeedProps> = ({ filters }) => {
 
   return (
     <div className="divide-y-gray-300 space-y-2 divide-y p-4 dark:divide-neutral-600">
+      {twats.length === 0 && (
+        <div className="mx-auto w-fit">
+          <Image
+            src="https://media.tenor.com/nEP6ovplEd8AAAAi/so-really.gif"
+            alt=""
+            width={100}
+            height={100}
+          />
+        </div>
+      )}
       {twats.map((twat) => (
         <TwatCard key={twat.id} data={twat} />
       ))}

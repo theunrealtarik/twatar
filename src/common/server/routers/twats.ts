@@ -230,4 +230,36 @@ export default createTRPCRouter({
         return 1;
       }
     }),
+  /**
+   * Deletes a twat
+   */
+  delete: protectedProcedure
+    .input(
+      z.object({
+        tid: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { tid } }) => {
+      try {
+        const userId = ctx.session.user.id;
+        const twat = await ctx.prisma.twat.findUniqueOrThrow({
+          where: {
+            id: tid,
+          },
+        });
+
+        if (twat.authorId === userId) {
+          await ctx.prisma.twat.delete({
+            where: {
+              id: twat.id,
+            },
+          });
+        }
+      } catch {
+        throw new TRPCError({
+          message: "Failed To Fetch Twat",
+          code: "NOT_FOUND",
+        });
+      }
+    }),
 });

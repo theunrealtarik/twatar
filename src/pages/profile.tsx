@@ -178,9 +178,9 @@ const Profile: NextPage<ProfilePageProps> = ({ user }) => {
         </div>
       </div>
 
-      <h4 className="mt-16 px-4 font-bold">
+      {/* <h4 className="mt-16 px-4 font-bold">
         <span>Twats</span>
-      </h4>
+      </h4> */}
       <Feed filters={{ profileId: profile.data?.id }} />
 
       <EditProfile user={user} isOpen={isOpen} onClose={() => setOpen(false)} />

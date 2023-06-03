@@ -44,7 +44,11 @@ const TwatCard: FC<TwatCardProps> = ({
 
   return (
     <div className="space-y-1 py-4">
-      <TwatHeader author={data.author} createdAt={data.createdAt} />
+      <TwatHeader
+        id={data.id}
+        author={data.author}
+        createdAt={data.createdAt}
+      />
 
       <p
         className={classNames(
