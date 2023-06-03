@@ -15,5 +15,4 @@ export { default as TwatCreate } from "./Core/TwatCreate";
 export { default as Feed } from "./Core/Feed";
 export { default as EditProfile } from "./Core/EditProfile";
 
-export { default as AppLayout } from "./AppLayout";
 export { default as GifPicker } from "./GifPicker";

@@ -1,20 +1,13 @@
 import type { FC, ReactNode } from "react";
-import type { IconType } from "react-icons";
 
+import { classNames, signIn } from "@/common/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
-import { classNames, signIn } from "@/common/lib/utils";
 
-import {
-  FiHome,
-  FiLogIn,
-  FiLogOut,
-  FiSearch,
-  FiSettings,
-  FiUser,
-} from "react-icons/fi";
 import { Button, Input, UserAvatar } from "@/components";
+import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { SideMenuLinks } from "./data";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -24,7 +17,7 @@ interface AppLayoutProps {
 
 const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
   const router = useRouter();
-  const selectedTab = SideMenuLinks.get(router.pathname);
+  const selectedTab = SideMenuLinks.get(router.asPath);
   const renderMenuItems = MenuItems(router, user);
 
   return (
@@ -103,46 +96,5 @@ const MenuItems = (router: NextRouter, user: IUser | null) =>
         );
     }
   );
-
-const SideMenuLinks = new Map<string, SideMenuElement>([
-  [
-    "/",
-    {
-      label: "Home",
-      authRequired: false,
-      Icon: FiHome,
-    },
-  ],
-  [
-    "/profile",
-    {
-      label: "Profile",
-      authRequired: true,
-      Icon: FiUser,
-    },
-  ],
-  [
-    "/search",
-    {
-      label: "Search",
-      authRequired: true,
-      Icon: FiSearch,
-    },
-  ],
-  [
-    "/settings",
-    {
-      label: "Settings",
-      authRequired: true,
-      Icon: FiSettings,
-    },
-  ],
-]);
-
-type SideMenuElement = {
-  label: string;
-  authRequired: boolean;
-  Icon: IconType;
-};
 
 export default AppLayout;

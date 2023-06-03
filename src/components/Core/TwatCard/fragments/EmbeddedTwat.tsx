@@ -15,7 +15,11 @@ interface EmbeddedTwatProps {
 const EmbeddedTwat: FC<EmbeddedTwatProps> = ({ data }) => {
   return (
     <div className="rounded-xl border border-gray-300 p-4 dark:border-neutral-600">
-      <TwatHeader author={{ ...data.author }} createdAt={data.createdAt} />
+      <TwatHeader
+        author={{ ...data.author }}
+        createdAt={data.createdAt}
+        id={data.id}
+      />
       <Link
         href={{
           pathname: "/twat/",

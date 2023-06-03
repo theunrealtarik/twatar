@@ -1,6 +1,8 @@
 import { withSession } from "@/common/middlewares";
 import { api } from "@/common/server/api";
-import { AppLayout, Loading, TwatCard } from "@/components";
+
+import { AppLayout } from "@/layouts";
+import { Loading, TwatCard } from "@/components";
 
 import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";

@@ -91,14 +91,29 @@ export default createTRPCRouter({
           attachment.url = uploadedImage.url;
         }
 
+        const extractedHashtags = content
+          .split(" ")
+          .filter((word) => word.startsWith("#"));
+
         const data = await ctx.prisma.twat.create({
           data: {
             authorId: ctx.session.user.id,
             content,
             attachment: attachment?.url,
+            hashtags: {
+              connectOrCreate: extractedHashtags.map((hashtag) => ({
+                where: {
+                  name: hashtag,
+                },
+                create: {
+                  name: hashtag,
+                },
+              })),
+            },
           },
           include: TWAT_INCLUDES,
         });
+
         return { ...data, selfLike: false, selfRetwat: false };
       } catch {
         throw new TRPCError({

@@ -11,9 +11,12 @@ import { FiRepeat } from "react-icons/fi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { classNames } from "@/common/lib/utils";
 
-import TwatHeader from "./fragments/TwatHeader";
-import TwatAttachment from "./fragments/TwatAttachment";
-import EmbeddedTwat from "./fragments/EmbeddedTwat";
+import {
+  TwatHeader,
+  TwatAttachment,
+  EmbeddedTwat,
+  TwatContent,
+} from "./fragments";
 
 interface TwatCardProps {
   data: RouterOutputs["feed"]["twats"][number];
@@ -50,20 +53,13 @@ const TwatCard: FC<TwatCardProps> = ({
         createdAt={data.createdAt}
       />
 
-      <p
-        className={classNames(
-          "text-md md:text-lg",
-          lineClamp ? "line-clamp-2" : "line-clamp-none"
-        )}
-      >
-        {link ? (
-          <Link href={{ pathname: "/twat/".concat(data.id) }}>
-            {data.content}
-          </Link>
-        ) : (
-          data.content
-        )}
-      </p>
+      {link ? (
+        <Link href={{ pathname: "/twat/".concat(data.id) }}>
+          <TwatContent lineClamp={lineClamp} content={data.content} />
+        </Link>
+      ) : (
+        <TwatContent lineClamp={lineClamp} content={data.content} />
+      )}
       <TwatAttachment url={data.attachment} />
       {data.embeddedTwat && <EmbeddedTwat data={data.embeddedTwat} />}
       <div className="inline-flex gap-x-6">

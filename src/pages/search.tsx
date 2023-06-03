@@ -1,16 +1,20 @@
-import { withSession } from "@/common/middlewares";
-import { AppLayout, Feed, UserAvatar } from "@/components";
-import { Tab } from "@headlessui/react";
-import type { NextPage } from "next";
-import type { IconType } from "react-icons";
-import { type FC, useEffect } from "react";
-import { useRouter } from "next/router";
-
-import { FiTwitter, FiUser } from "react-icons/fi";
 import { api } from "@/common/server/api";
 import { useScroll } from "@/hooks";
 import { classNames } from "@/common/lib/utils";
+
+import { withSession } from "@/common/middlewares";
+import { Feed, UserAvatar } from "@/components";
+import { AppLayout } from "@/layouts";
+import { Tab } from "@headlessui/react";
+
+import { type FC, useEffect } from "react";
+import type { NextPage } from "next";
+import type { IconType } from "react-icons";
+import { useRouter } from "next/router";
+
 import Link from "next/link";
+
+import { FiTwitter, FiUser } from "react-icons/fi";
 
 interface SearchPageProps {
   user: IUser;

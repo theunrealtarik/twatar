@@ -1,7 +1,8 @@
 import { withSession } from "@/common/middlewares";
 import { type NextPage } from "next";
 
-import { AppLayout, Toggle } from "@/components";
+import { AppLayout } from "@/layouts";
+import { Toggle } from "@/components";
 import { useTheme } from "@/hooks";
 
 const Settings: NextPage<{ user: IUser }> = ({ user }) => {

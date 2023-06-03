@@ -62,16 +62,17 @@ model VerificationToken {
 }
 
 model Twat {
-    id           String   @id @unique @default(uuid())
+    id           String    @id @unique @default(uuid())
     content      String
-    createdAt    DateTime @default(now())
-    author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    createdAt    DateTime  @default(now())
+    author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId     String
     attachment   String?
-    embeddedTwat Twat?    @relation(name: "repost", fields: [retwatId], references: [id], onDelete: Cascade)
-    retwats      Twat[]   @relation(name: "repost")
+    embeddedTwat Twat?     @relation(name: "repost", fields: [retwatId], references: [id], onDelete: Cascade)
+    retwats      Twat[]    @relation(name: "repost")
     retwatId     String?
     likes        Like[]
+    hashtags     Hashtag[]
 }
 
 model Like {
@@ -81,4 +82,13 @@ model Like {
     twat   Twat?  @relation(fields: [twatId], references: [id], onDelete: Cascade)
 
     @@id([userId, twatId])
+}
+
+model Hashtag {
+    id        String   @id @default(cuid())
+    name      String   @unique
+    createdAt DateTime @default(now())
+    twats     Twat[]
+
+    @@unique([id, name])
 }

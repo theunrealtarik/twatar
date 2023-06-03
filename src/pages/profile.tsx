@@ -4,7 +4,6 @@ import type { NextPage } from "next";
 
 import { classNames, shortFormatNumber, signIn } from "@/common/lib/utils";
 import {
-  AppLayout,
   Button,
   EditProfile,
   Error,
@@ -12,6 +11,8 @@ import {
   Loading,
   UserAvatar,
 } from "@/components";
+import { AppLayout } from "@/layouts";
+
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
