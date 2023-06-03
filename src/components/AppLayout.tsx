@@ -3,7 +3,7 @@ import type { IconType } from "react-icons";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { classNames, signIn } from "@/common/lib/utils";
 
 import {
@@ -25,6 +25,7 @@ interface AppLayoutProps {
 const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
   const router = useRouter();
   const selectedTab = SideMenuLinks.get(router.pathname);
+  const renderMenuItems = MenuItems(router, user);
 
   return (
     <main className="mx-auto grid max-w-screen-xl grid-cols-12">
@@ -35,30 +36,7 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
               <Image fill alt="twtar logo" src="/logo.svg" />
             </div>
           </Link>
-          <ul className="flex h-full flex-col gap-y-2">
-            {Array.from(SideMenuLinks).map(
-              ([pathname, { label, authRequired, Icon }], index) => {
-                const isActive = router.pathname.endsWith(pathname);
-                pathname = index === 1 ? `/profile?id=${user?.id}` : pathname;
-
-                if (!authRequired || (authRequired && !!user))
-                  return (
-                    <li
-                      key={index}
-                      className={classNames(isActive ? "font-bold" : "")}
-                    >
-                      <Link
-                        className="inline-flex w-full items-center gap-x-2 rounded-full px-2 py-2 transition-colors hover:bg-gray-200 dark:hover:bg-neutral-900"
-                        href={pathname}
-                      >
-                        <Icon />
-                        <span className="hidden md:block">{label}</span>
-                      </Link>
-                    </li>
-                  );
-              }
-            )}
-          </ul>
+          <ul className="flex h-full flex-col gap-y-2">{renderMenuItems}</ul>
         </div>
 
         {!!user ? (
@@ -103,6 +81,28 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
     </main>
   );
 };
+
+const MenuItems = (router: NextRouter, user: IUser | null) =>
+  Array.from(SideMenuLinks).map(
+    ([pathname, { label, authRequired, Icon }], index) => {
+      pathname = index === 1 ? `/profile?id=${user?.id}` : pathname;
+      const isActive = router.asPath.endsWith(pathname);
+
+      if (!authRequired || (authRequired && !!user))
+        return (
+          <li key={index} className={classNames(isActive ? "font-bold" : "")}>
+            <Link
+              className="inline-flex w-full items-center gap-x-2 rounded-full px-2 py-2 transition-colors hover:bg-gray-200 dark:hover:bg-neutral-900"
+              href={pathname}
+              replace
+            >
+              <Icon />
+              <span className="hidden md:block">{label}</span>
+            </Link>
+          </li>
+        );
+    }
+  );
 
 const SideMenuLinks = new Map<string, SideMenuElement>([
   [
