@@ -28,7 +28,7 @@ const TwatHeader: FC<TwatHeaderProps> = ({ author, createdAt }) => {
         >
           {author.name}
         </Link>
-        <span className="text-gray-300">{relativeFormatTime(createdAt)}</span>
+        <span className="text-gray-500">{relativeFormatTime(createdAt)}</span>
       </div>
     </div>
   );

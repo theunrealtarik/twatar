@@ -128,7 +128,7 @@ const EditProfile: FC<EditProfileProps> = ({ isOpen, onClose, user }) => {
                     onChange={(e) => update({ bio: e.target.value })}
                   />
                   <div className="inline-flex w-full items-start justify-between">
-                    <span className="text-gray-400">
+                    <span className="text-gray-500">
                       {profile.bio ? profile.bio.length : 0}/300
                     </span>
                     <Button disabled={updateProfile.isLoading}>Save</Button>
