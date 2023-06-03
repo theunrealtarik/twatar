@@ -75,7 +75,7 @@ export default createTRPCRouter({
           attachment.url
         ) {
           const buffer = Buffer.from(attachment.url, "base64");
-          if (buffer.length > 5 * 10 ** 6)
+          if (buffer.length > 3 * 10 ** 6)
             throw new TRPCError({
               code: "BAD_REQUEST",
               cause: "File Size",

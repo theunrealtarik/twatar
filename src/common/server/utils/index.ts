@@ -69,6 +69,7 @@ export function calculateXp(amount: number, user: User) {
 }
 
 export enum Folders {
-  ProfilePictures = "profiles_pictures",
+  Avatars = "avatars",
+  Banners = "banners",
   Twats = "twats",
 }

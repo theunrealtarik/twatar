@@ -1,6 +1,6 @@
 import { TypeOf, z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
-import { calculateXp } from "../utils";
+import { Folders, calculateXp } from "../utils";
 
 export default createTRPCRouter({
   /**
@@ -112,8 +112,8 @@ export default createTRPCRouter({
       };
 
       const [image, banner] = await Promise.all([
-        handleImage(input.image, "avatars"),
-        handleImage(input.banner, "banners"),
+        handleImage(input.image, Folders.Avatars),
+        handleImage(input.banner, Folders.Banners),
       ]);
 
       if (image) data.image = image;
