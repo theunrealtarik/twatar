@@ -6,16 +6,17 @@ const TwatAttachment: FC<{ url: string | null }> = ({ url }) => {
   if (!url) return null;
 
   return (
-    <div className="relative h-96 w-full overflow-hidden rounded-lg shadow">
+    <div className="max-h-80 w-full overflow-hidden rounded-lg shadow">
       {isError ? (
         <div>
           <span>there was some error loading this cool GIF 😑</span>
         </div>
       ) : (
         <Image
-          fill
+          width={800}
+          height={600}
           alt=""
-          className="bg-gray-200 object-contain dark:bg-neutral-950"
+          className="max-h-80 w-full bg-gray-200 object-contain dark:bg-neutral-950"
           src={url}
           onError={() => setError(() => true)}
         />
