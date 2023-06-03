@@ -1,13 +1,14 @@
 import type { FC, ReactNode } from "react";
 
-import { classNames, signIn } from "@/common/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
+import { signIn } from "@/common/lib/utils";
 
 import { Button, Input, UserAvatar } from "@/components";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { SideMenuLinks } from "./data";
+import { HashtagsList, MenuItems } from "./fragments";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -70,31 +71,10 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
         <form action="/search">
           <Input placeholder="search ..." name="q" className="w-full" />
         </form>
+        <HashtagsList />
       </aside>
     </main>
   );
 };
-
-const MenuItems = (router: NextRouter, user: IUser | null) =>
-  Array.from(SideMenuLinks).map(
-    ([pathname, { label, authRequired, Icon }], index) => {
-      pathname = index === 1 ? `/profile?id=${user?.id}` : pathname;
-      const isActive = router.asPath.endsWith(pathname);
-
-      if (!authRequired || (authRequired && !!user))
-        return (
-          <li key={index} className={classNames(isActive ? "font-bold" : "")}>
-            <Link
-              className="inline-flex w-full items-center gap-x-2 rounded-full px-2 py-2 transition-colors hover:bg-gray-200 dark:hover:bg-neutral-900"
-              href={pathname}
-              replace
-            >
-              <Icon />
-              <span className="hidden md:block">{label}</span>
-            </Link>
-          </li>
-        );
-    }
-  );
 
 export default AppLayout;

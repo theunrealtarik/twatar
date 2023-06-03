@@ -6,12 +6,12 @@ import twats from "./routers/twats";
 import tenor from "./routers/tenor";
 
 import { TWAT_INCLUDES, selfInteractions } from "./utils";
+import { TRPCError } from "@trpc/server";
 
 export const appRouter = createTRPCRouter({
   user,
   twats,
   tenor,
-
   users: publicProcedure
     .input(
       z.object({
@@ -141,6 +141,33 @@ export const appRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+
+  hashtags: publicProcedure.query(async ({ ctx }) => {
+    try {
+      const data = await ctx.prisma.hashtag.findMany({
+        take: 10,
+        orderBy: {
+          twats: {
+            _count: "desc",
+          },
+        },
+        include: {
+          _count: {
+            select: {
+              twats: true,
+            },
+          },
+        },
+      });
+
+      return data.filter((hashtag) => hashtag._count.twats > 0);
+    } catch {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Could Not Retrieve Hashtags",
+      });
+    }
+  }),
 });
 
 export type AppRouter = typeof appRouter;

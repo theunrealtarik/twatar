@@ -8,31 +8,56 @@ interface TwatContentProps {
 }
 
 const TwatContent: FC<TwatContentProps> = ({ content, lineClamp = true }) => {
+  const hashtagRegex = /#\w+/g;
+
   return (
-    <p
+    <div
       className={classNames(
-        "text-md space-x-1 md:text-lg",
+        "text-md flex flex-wrap gap-x-1 md:text-lg",
         lineClamp ? "line-clamp-2" : "line-clamp-none"
       )}
     >
-      {content.split(" ").map((word) => {
-        if (word.startsWith("#"))
-          return (
-            <Link
-              href={{
-                pathname: "/search/tags",
-                query: {
-                  h: word,
-                },
-              }}
-              className="font-medium text-sky-600 hover:underline"
-            >
-              {word}
-            </Link>
-          );
-        else return <span>word</span>;
+      {content.split("\n").map((line, lineIndex) => {
+        const words = line.split(" ");
+
+        return (
+          <div key={lineIndex}>
+            {words.map((word, wordIndex) => {
+              const isLastWord = wordIndex === words.length - 1;
+
+              if (hashtagRegex.test(word) || word.startsWith("#")) {
+                return (
+                  <Fragment>
+                    <Link
+                      href={{
+                        pathname: "/search/tags",
+                        query: {
+                          h: word,
+                        },
+                      }}
+                      key={wordIndex}
+                      className="font-medium text-sky-600 hover:underline"
+                    >
+                      {word}
+                    </Link>
+                    {!isLastWord && " "}
+                  </Fragment>
+                );
+              } else {
+                return (
+                  <Fragment>
+                    <span key={wordIndex} className={""}>
+                      {word}
+                    </span>
+                    {!isLastWord && " "}
+                  </Fragment>
+                );
+              }
+            })}
+          </div>
+        );
       })}
-    </p>
+    </div>
   );
 };
 

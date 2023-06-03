@@ -93,7 +93,7 @@ export default createTRPCRouter({
 
         const extractedHashtags = content
           .split(" ")
-          .filter((word) => word.startsWith("#"));
+          .filter((word) => word.startsWith("#") || /#\w+/g.test(word));
 
         const data = await ctx.prisma.twat.create({
           data: {
@@ -101,14 +101,16 @@ export default createTRPCRouter({
             content,
             attachment: attachment?.url,
             hashtags: {
-              connectOrCreate: extractedHashtags.map((hashtag) => ({
-                where: {
-                  name: hashtag,
-                },
-                create: {
-                  name: hashtag,
-                },
-              })),
+              connectOrCreate: extractedHashtags
+                .filter((hashtag) => hashtag.length >= 2)
+                .map((hashtag) => ({
+                  where: {
+                    name: hashtag,
+                  },
+                  create: {
+                    name: hashtag,
+                  },
+                })),
             },
           },
           include: TWAT_INCLUDES,
@@ -272,7 +274,7 @@ export default createTRPCRouter({
         }
       } catch {
         throw new TRPCError({
-          message: "Failed To Fetch Twat",
+          message: "Failed To Fetch Twats",
           code: "NOT_FOUND",
         });
       }

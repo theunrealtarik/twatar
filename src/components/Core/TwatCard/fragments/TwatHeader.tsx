@@ -70,6 +70,7 @@ const updateFeed = (
   context: ReturnType<typeof api.useContext>,
   tid: string
 ) => {
+  context.hashtags.refetch();
   context.feed.setInfiniteData(
     {
       filters: {
