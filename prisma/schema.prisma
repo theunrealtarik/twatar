@@ -51,6 +51,7 @@ model User {
     createdAt     DateTime  @default(now())
     xp            Int       @default(0)
     level         Int       @default(1)
+    comments      Comment[]
 }
 
 model VerificationToken {
@@ -73,6 +74,7 @@ model Twat {
     retwatId     String?
     likes        Like[]
     hashtags     Hashtag[]
+    comments     Comment[]
 }
 
 model Like {
@@ -91,4 +93,14 @@ model Hashtag {
     twats     Twat[]
 
     @@unique([id, name])
+}
+
+model Comment {
+    id        String   @id @default(cuid())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    twat      Twat     @relation(fields: [twatId], references: [id])
+    twatId    String
+    content   String
+    createdAt DateTime @default(now())
 }

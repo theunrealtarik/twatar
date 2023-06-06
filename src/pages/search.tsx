@@ -80,7 +80,7 @@ const UsersList: FC<{
       getNextPageParam: ({ nextCursor }) => nextCursor,
     }
   );
-  const scrollPos = useScroll(null);
+  const scrollPos = useScroll();
 
   useEffect(() => {
     if (scrollPos > 90 && users.hasNextPage && !users.isFetching) {

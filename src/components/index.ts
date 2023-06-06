@@ -13,6 +13,8 @@ export { default as Loading } from "./Feedback/Loading";
 export { default as TwatCard } from "./Core/TwatCard";
 export { default as TwatCreate } from "./Core/TwatCreate";
 export { default as Feed } from "./Core/Feed";
+export { default as CreateComment } from "./Core/CreateComment";
+export { default as CommentCard } from "./Core/CommentCard";
 export { default as EditProfile } from "./Core/EditProfile";
 
 export { default as GifPicker } from "./GifPicker";

@@ -1,16 +1,17 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 import useLocalStorage from "use-local-storage-state";
 
-export function useScroll(element: HTMLElement | null) {
+export function useScroll() {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     if (window !== undefined) {
       window.addEventListener("scroll", (e) => {
-        if (!element) element = document.documentElement;
-        const height = (element.scrollHeight - element.clientHeight) as number;
+        const height = (document.documentElement.scrollHeight -
+          document.documentElement.clientHeight) as number;
         const scrollTop =
-          document.body.scrollTop || (element?.scrollTop as number);
+          document.body.scrollTop ||
+          (document.documentElement?.scrollTop as number);
 
         setScrollPosition((scrollTop / height) * 100);
       });

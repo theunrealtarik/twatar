@@ -11,7 +11,7 @@ interface FeedProps {
 }
 
 const Feed: FC<FeedProps> = ({ filters }) => {
-  const scrollPos = useScroll(null);
+  const scrollPos = useScroll();
   const feed = api.feed.useInfiniteQuery(
     {
       filters,

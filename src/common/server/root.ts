@@ -4,6 +4,7 @@ import { createTRPCRouter, publicProcedure } from "./api/trpc";
 import user from "./routers/user";
 import twats from "./routers/twats";
 import tenor from "./routers/tenor";
+import comments from "./routers/comments";
 
 import { TWAT_INCLUDES, selfInteractions } from "./utils";
 import { TRPCError } from "@trpc/server";
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   user,
   twats,
   tenor,
+  comments,
   users: publicProcedure
     .input(
       z.object({

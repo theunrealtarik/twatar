@@ -3,15 +3,14 @@ import { FC, useState } from "react";
 import { FiUser } from "react-icons/fi";
 
 import Image from "next/image";
-import ErrorBoundary from "../Feedback/ErrorBoundary";
 
 interface UserAvatarProps extends VariantProps<typeof UserAvatarStyles> {
   className?: string;
-  src: string | null;
+  src: string | null | undefined;
 }
 
 const UserAvatarStyles = cva(
-  "relative overflow-hidden grid place-content-center bg-gray-200 dark:bg-neutral-800",
+  "shadow-sm relative overflow-hidden grid place-content-center bg-gray-200 dark:bg-neutral-800",
   {
     variants: {
       size: {
