@@ -44,8 +44,6 @@ export const appRouter = createTRPCRouter({
         );
       }
 
-      console.log(users);
-
       return {
         users,
         nextCursor,

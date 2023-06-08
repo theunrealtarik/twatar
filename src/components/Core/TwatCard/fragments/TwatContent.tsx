@@ -21,18 +21,18 @@ const TwatContent: FC<TwatContentProps> = ({ content, lineClamp = true }) => {
         const words = line.split(" ");
 
         return (
-          <div key={lineIndex}>
+          <div key={lineIndex * 2}>
             {words.map((word, wordIndex) => {
               const isLastWord = wordIndex === words.length - 1;
 
               if (hashtagRegex.test(word) || word.startsWith("#")) {
                 return (
-                  <Fragment>
+                  <Fragment key={wordIndex}>
                     <Link
                       href={{
-                        pathname: "/search/tags",
+                        pathname: "/search/twats",
                         query: {
-                          h: word,
+                          q: word,
                         },
                       }}
                       key={wordIndex}

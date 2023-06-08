@@ -19,10 +19,11 @@ const HashtagsList: FC<HashtagsListProps> = ({}) => {
         {hashtags.data &&
           hashtags.data.map((hashtag, index) => (
             <Link
+              key={index}
               href={{
-                pathname: "/search/tags",
+                pathname: "/search/twats",
                 query: {
-                  h: hashtag.name,
+                  q: hashtag.name,
                 },
               }}
               className="w-full rounded-lg px-2 py-1 transition hover:bg-gray-200 dark:hover:bg-neutral-900"

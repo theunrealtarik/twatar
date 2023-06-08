@@ -1,14 +1,14 @@
 import Link from "next/link";
 
-import type { NextRouter } from "next/router";
-import { SideMenuLinks } from "../data";
 import { classNames } from "@/common/lib/utils";
+import { SideMenuLinks } from "../data";
+import { NextRouter } from "next/router";
 
 const MenuItems = (router: NextRouter, user: IUser | null) => {
   return Array.from(SideMenuLinks).map(
-    ([pathname, { label, authRequired, Icon }], index) => {
-      pathname = index === 1 ? `/profile?id=${user?.id}` : pathname;
-      const isActive = router.asPath.endsWith(pathname);
+    ([pathname, { label, authRequired, Icon, regex }], index) => {
+      if (index === 1) pathname = pathname.concat("?id=" + user?.id);
+      const isActive = regex.test(router.asPath);
 
       if (!authRequired || (authRequired && !!user))
         return (

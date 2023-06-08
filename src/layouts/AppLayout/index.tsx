@@ -14,9 +14,15 @@ interface AppLayoutProps {
   children: ReactNode;
   user: IUser | null;
   hideHeader?: boolean;
+  searchPath?: string;
 }
 
-const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
+const AppLayout: FC<AppLayoutProps> = ({
+  user,
+  children,
+  searchPath = "/search/twats",
+  ...props
+}) => {
   const router = useRouter();
   const selectedTab = SideMenuLinks.get(router.asPath);
   const renderMenuItems = MenuItems(router, user);
@@ -68,7 +74,7 @@ const AppLayout: FC<AppLayoutProps> = ({ user, children, ...props }) => {
         <div>{children}</div>
       </div>
       <aside className="sticky right-0 top-0 col-span-2 hidden h-screen border-l border-gray-300 p-4 dark:border-neutral-600 lg:block">
-        <form action="/search">
+        <form action={searchPath}>
           <Input placeholder="search ..." name="q" className="w-full" />
         </form>
         <HashtagsList />

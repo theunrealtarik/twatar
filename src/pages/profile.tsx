@@ -115,7 +115,7 @@ const Profile: NextPage<ProfilePageProps> = ({ user }) => {
                     </div>
                   </div>
                 )}
-                {user && (
+                {user && user.id === profile.data.id && (
                   <Button
                     className="w-12 justify-center"
                     intent="secondary"
