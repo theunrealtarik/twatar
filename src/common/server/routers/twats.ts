@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "../api/trpc";
 import {
   Folders,
   TWAT_INCLUDES,
@@ -15,7 +19,7 @@ export default createTRPCRouter({
    * Retrieves a twat by its ID.
    * @returns {Promise<object|null>} - A promise that resolves to the twat object if found, or `null` if not found.
    */
-  get: protectedProcedure
+  get: publicProcedure
     .input(
       z.object({
         tid: z.string(),
@@ -31,7 +35,7 @@ export default createTRPCRouter({
 
       if (data) {
         const { selfLike, selfRetwat } = selfInteractions(
-          ctx.session.user.id ?? "",
+          ctx.session?.user.id ?? "",
           {
             likes: data?.likes,
             retwats: data.retwats,
