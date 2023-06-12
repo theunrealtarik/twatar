@@ -14,11 +14,17 @@ interface TwatHeaderProps {
     name: string | null;
     image: string | null;
   };
+  showDeleteButton?: boolean;
   createdAt: Date;
   id: string;
 }
 
-const TwatHeader: FC<TwatHeaderProps> = ({ author, createdAt, id }) => {
+const TwatHeader: FC<TwatHeaderProps> = ({
+  author,
+  createdAt,
+  showDeleteButton = true,
+  id,
+}) => {
   const { status, data } = useSession();
   const deleteTwat = api.twats.delete.useMutation({
     onSuccess: () => {
@@ -52,16 +58,18 @@ const TwatHeader: FC<TwatHeaderProps> = ({ author, createdAt, id }) => {
           <span className="text-gray-500">{relativeFormatTime(createdAt)}</span>
         </div>
       </div>
-      {status === "authenticated" && data.user.id === author.id && (
-        <div>
-          <button
-            onClick={deletionHandler}
-            className="text-gray-500 transition-colors duration-200 hover:text-sky-500 dark:text-neutral-500 dark:hover:text-sky-500"
-          >
-            <FaTrashAlt />
-          </button>
-        </div>
-      )}
+      {status === "authenticated" &&
+        data.user.id === author.id &&
+        showDeleteButton && (
+          <div>
+            <button
+              onClick={deletionHandler}
+              className="text-gray-500 transition-colors duration-200 hover:text-sky-500 dark:text-neutral-500 dark:hover:text-sky-500"
+            >
+              <FaTrashAlt />
+            </button>
+          </div>
+        )}
     </div>
   );
 };

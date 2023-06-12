@@ -4,6 +4,7 @@ import TwatAttachment from "./TwatAttachment";
 
 import Link from "next/link";
 import type { Twat, User } from "@prisma/client";
+import TwatContent from "./TwatContent";
 
 interface EmbeddedTwatProps {
   data:
@@ -19,16 +20,14 @@ const EmbeddedTwat: FC<EmbeddedTwatProps> = ({ data }) => {
         author={{ ...data.author }}
         createdAt={data.createdAt}
         id={data.id}
+        showDeleteButton={false}
       />
       <Link
         href={{
-          pathname: "/twat/",
-          query: {
-            id: data.id,
-          },
+          pathname: "/twat/" + data.id,
         }}
       >
-        <p>{data.content}</p>
+        <TwatContent content={data.content} lineClamp={true} />
         <TwatAttachment url={data.attachment} />
       </Link>
     </div>
