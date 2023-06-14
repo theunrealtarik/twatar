@@ -46,7 +46,7 @@ const TwatHeader: FC<TwatHeaderProps> = ({
         <div className="inline-flex space-x-4">
           <Link
             href={{
-              pathname: "profile",
+              pathname: "/profile/",
               query: {
                 id: author.id,
               },
